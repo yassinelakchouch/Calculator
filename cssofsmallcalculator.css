@@ -1,0 +1,96 @@
+div
+{
+    width:350px;
+    height:400px;
+    margin-top:50px;
+    border:4px solid black;
+    border-radius:15px;
+    margin-left:550px;
+    background:linear-gradient(-180deg,lightgreen,lightblue);
+}
+
+h1
+{
+    color:azure;
+    font-variant:small-caps;
+    text-shadow : 1px 0px 5px black;
+    font-family :'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-variant : small-caps;
+}
+
+#p1
+{
+    display:inline-block;
+    width:300px;
+    height:66px;
+    border:2px solid gray;
+    box-shadow:1px 1px gray;
+    color:chocolate;
+    font-weight:bold;
+    background-color:white;
+    position : relative;
+}
+
+#expression
+{
+    overflow:hidden;
+    display:inline-block;
+    border:1px hidden black;
+    width:17em;
+    height:30px;
+    color:black;
+    text-align : right;
+    font : normal normal 1.05em/normal "fantasy";
+    text-shadow : 1px 0px 2px black;
+}
+
+#result
+{
+    display:inline-block;
+    text-align : right;
+    height:25px;
+    width:95%;
+    border:1px hidden black;
+    font: normal bolder 1em/25px "fantasy";
+    position : absolute;
+    top:38px;
+    left:6px;
+}
+
+input
+{
+    display : block;
+    width:50px;
+    height:35px;
+    text-align:center;
+    background-color:#4b4b4b;
+    color:white;
+    border:none;
+    box-shadow:2px 2px black; 
+    border-radius : 50%;
+}
+
+input:active
+{
+        box-shadow:0 0px 2px #666;
+        transform: translateY(2px);
+}
+
+input[value="AC"],input[value="0"]
+{
+    background : orange;
+}
+
+input[value="DEL"]
+{
+    background : red;
+}
+
+
+
+
+
+
+
+
+
