@@ -34,7 +34,7 @@ function isNum(nbr){
 function checkValidateExpression(data){
     try{
         var s = eval(data);
-        if(s=="NaN"||s=="Infinity")
+        if(s.includes("NaN")||s.includes("Infinity"))
         return false;
         return true;
         }catch(err){
@@ -89,8 +89,8 @@ function buttonPress(e){
                   alternativeExp += ".";
                   if(checkValidateExpression(alternativeExp))
                   expression.innerHTML += button.value;      
-           }else if(button.value=="="&&checkValidateExpression(fullInput)&&checkValidateExpression(result.innerHTML)){
-            if(calculExpression(fullInput)!=Infinity){
+           }else if(button.value=="="&&checkValidateExpression(result.innerHTML)){
+            if(checkValidateExpression(fullInput)&&calculExpression(fullInput)!=Infinity){
                 if(fullInput!="")
                result.innerHTML = String(calculExpression(fullInput));
                expression.innerHTML = "";
