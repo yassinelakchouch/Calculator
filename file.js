@@ -90,7 +90,7 @@ function buttonPress(e){
                   if(checkValidateExpression(alternativeExp))
                   expression.innerHTML += button.value;      
            }else if(button.value=="="&&checkValidateExpression(result.innerHTML)){
-            if(checkValidateExpression(fullInput)&&(calculExpression(fullInput)!=Infinity&&calculExpression(fullInput)!="NaN"){
+            if(checkValidateExpression(fullInput)&&(calculExpression(fullInput)!=Infinity&&calculExpression(fullInput)!=NaN){
                 if(fullInput!="")
                result.innerHTML = String(calculExpression(fullInput));
                expression.innerHTML = "";
