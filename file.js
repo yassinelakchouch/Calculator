@@ -89,8 +89,8 @@ function buttonPress(e){
                   alternativeExp += ".";
                   if(checkValidateExpression(alternativeExp))
                   expression.innerHTML += button.value;      
-           }else if(button.value=="="&&checkValidateExpression(result.innerHTML)){
-            if(checkValidateExpression(fullInput)&&calculExpression(fullInput)!=Infinity){
+           }else if(button.value=="="&&checkValidateExpression(fullInput)){
+            if(checkValidateExpression(result.innerHTML)&&calculExpression(fullInput)!=Infinity){
                 if(fullInput!="")
                result.innerHTML = String(calculExpression(fullInput));
                expression.innerHTML = "";
