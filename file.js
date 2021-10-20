@@ -31,18 +31,18 @@ function isNum(nbr){
   }
   return false;
 }
+function calculExpression(data){
+    return eval(data);
+}
 function checkValidateExpression(data){
     try{
-        var s = eval(data);
+        var s = String(calculExpression(data));
         if(s.includes("NaN")||s.includes("Infinity"))
         return false;
         return true;
         }catch(err){
             return false;
         }
-}
-function calculExpression(data){
-     return eval(data);
 }
 function square(data){
    return  Math.pow(parseFloat(calculExpression(data)),2);
@@ -89,12 +89,15 @@ function buttonPress(e){
                   alternativeExp += ".";
                   if(checkValidateExpression(alternativeExp))
                   expression.innerHTML += button.value;      
-           }else if(button.value=="="&&checkValidateExpression(fullInput)){
-            if(checkValidateExpression(result.innerHTML)&&calculExpression(fullInput)!=Infinity){
-                if(fullInput!="")
-               result.innerHTML = String(calculExpression(fullInput));
+           }else if(button.value=="="&&checkValidateExpression(fullInput.innerHTML)){
+               let fRes = calculExpression(fullInput); 
+            if(checkValidateExpression(result.innerHTML)&&checkValidateExpression(fRes)){
+                if(fullInput!=""){
+               result.innerHTML = fRes;
+                }
                expression.innerHTML = "";
-            }else{
+            }
+            else{
                 expression.innerHTML = "";
                 result.innerHTML = "Syntax Error :(";
             }
