@@ -99,7 +99,7 @@ function buttonPress(e){
             }
             else{
                 expression.innerHTML = "";
-                result.innerHTML = "Syntax Error :(";
+                result.innerHTML = "Math Error :(";
             }
            }
           }
