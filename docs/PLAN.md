@@ -36,7 +36,7 @@ The design lives on the Design canvas, page "Other personal project": C-01 (stud
 | `1 ÷ 3 =` | `0.333333333333` |
 | `2 + 3 × 4 =` | `14`: × and ÷ before + and − |
 | `5 + × 2 =` | `10`: a second operator replaces the first |
-| `5 × − 3 =` | `-15`: − after × or ÷ starts a negative number |
+| `5 × − 3 =` | `−15`: − after × or ÷ starts a negative number |
 | `− 4 x² =` | `16`: the minus belongs to the number |
 | `3 x² + 1 =` | `10` |
 | `8 ÷ 0 =` | "Can't divide by zero. Your number is kept."; `⌫` removes the 0, a digit replaces it |
