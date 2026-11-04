@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+/* Board C-03: the portfolio's dark page and type, Gumroad's ink outlines and hard shadows; pink only for play and rewards. */
+@theme {
+  --color-ground: #0b0c0d;
+  --color-surface: #141617;
+  --color-cream: #ece8e1;
+  --color-paper: #d9d4cb;
+  --color-ink: #0b0c0d;
+  --color-body: #b9b8b3;
+  --color-muted: #8e918f;
+  --color-quiet: #5f625f;
+  --color-accent: #ff5a2c;
+  --color-pink: #ff90e8;
+  --color-outline: rgb(236 232 225 / 0.35);
+
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --shadow-key: 3px 3px 0 var(--color-ink);
+  --shadow-lift: 5px 5px 0 var(--color-ink);
+  --shadow-card: 8px 8px 0 var(--color-accent);
+
+  --ease-settle: cubic-bezier(0.34, 1.45, 0.5, 1);
+}
