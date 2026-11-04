@@ -1,37 +1,98 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Mycalculator</title>
-  <link rel="stylesheet" type="text/css" href="cssofsmallcalculator.css" />
-</head>
-<body>
-  <div align="center">
-    <h1>Calculator</h1>
-  <p id="p1">
-    <span id="expression"></span>
-    <span id="result"></span>
-  </p>
-<table>
-  <tr><td><input type="button" value="AC" id="Clear"></td>
-  <td><input type="button" value="DEL" id="delete" ></td><td><input type="button" value="x^2"></td><td><input type="button" value="/" class="operation" ></td></tr>
-  <tr>
-  <td><input type="button" class="number" value="7" ></td><td><input type="button" value="8" class="number" ></td><td><input type="button" value="9" class="number" ></td><td><input type="button" value="*" class="operation"></td></tr>
-  <tr>
-  <td><input type="button" value="4" class="number" ></td><td><input type="button" value="5" class="number" ></td><td><input type="button" class="number" value="6" ></td><td><input type="button" value="-" class="operation"></td></tr>
-<tr>
-  <td><input type="button" value="1" class="number" > </td>
-  <td><input type="button" value="2" class="number" ></td>
-  <td><input type="button" value="3" class="number" ></td>
-  <td><input type="button" value="+" class="operation" ></td>
-</tr>
-<tr>
-  <td colspan="2"><input type="button" value="0" class="number" style="width:105px"></td>
-  <td><input type="button" value="." id="ver" ></td>
-  <td><input type="button" value="=" id="equal"></td>
-  </tr>
-</table>
-</div>
-<script src="file.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculator, replayed · calc-project001</title>
+    <meta name="description" content="A small calculator that keeps score, with a one-button runner for the idle moments." />
+    <meta name="theme-color" content="#0b0c0d" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body class="min-h-dvh bg-ground font-display text-cream antialiased">
+    <div class="flex min-h-dvh flex-col">
+      <header class="flex items-center justify-between px-4 py-4 font-mono text-xs md:px-10 md:py-6">
+        <a href="https://lakchouchyassine.vercel.app" class="text-cream underline-offset-4 hover:underline">← Yassine Lakchouch</a>
+        <span class="text-muted">Other projects · 01</span>
+      </header>
+
+      <main class="grid flex-1 place-items-center px-4 pt-6 pb-12">
+        <div class="grid w-full max-w-[420px] items-center gap-10 md:max-w-none md:w-auto md:grid-cols-[420px_320px] md:gap-14">
+          <section id="card" class="card" aria-label="Calculator">
+            <div id="toast" class="toast" role="status" hidden></div>
+
+            <div class="flex items-center gap-2.5 font-mono text-xs text-ink">
+              <span id="level" class="flex-none font-medium">LVL 1</span>
+              <span class="xp-bar" aria-hidden="true"><span id="xp-fill" class="xp-fill"></span></span>
+              <span id="xp-text" class="flex-none">0/100 XP</span>
+              <span id="combo" class="combo" hidden></span>
+            </div>
+
+            <div id="display" class="display" data-mode="calc">
+              <div class="layer sum">
+                <span id="back-note" class="back-note" aria-hidden="true">Back to the sum</span>
+                <div id="expression" class="expression"></div>
+                <output id="main" class="main" aria-live="off">0</output>
+                <div id="note" class="note"></div>
+                <div id="error" class="error" hidden></div>
+              </div>
+              <div class="layer game" aria-hidden="true">
+                <svg id="scene" class="scene" viewBox="0 0 360 146" preserveAspectRatio="xMidYMax meet"></svg>
+                <span id="run-label" class="run-label">RUNNING</span>
+                <span id="score" class="score">0000</span>
+                <div id="game-text" class="game-text"></div>
+                <span id="run-hint" class="run-hint">Space · ↑ · tap</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span class="text-quiet">calc-project001</span>
+              <span class="flex gap-4">
+                <button id="sound" type="button" class="text-link" aria-pressed="true">Sound on</button>
+                <button id="tape-toggle" type="button" class="text-link" aria-expanded="false" aria-controls="tape">Tape</button>
+              </span>
+            </div>
+
+            <div id="tape" class="tape" hidden>
+              <div class="font-mono text-xs text-quiet">Tape · last 3</div>
+              <ol id="tape-rows" class="grid"></ol>
+            </div>
+
+            <div id="keys" class="grid grid-cols-4 gap-2.5">
+              <button type="button" class="key" data-key="AC" data-kind="clear" aria-label="All clear">AC</button>
+              <button type="button" class="key" data-key="⌫" data-kind="clear" aria-label="Delete">⌫</button>
+              <button type="button" class="key" data-key="x²" data-kind="op" aria-label="Square">x²</button>
+              <button type="button" class="key" data-key="÷" data-kind="op" aria-label="Divide">÷</button>
+              <button type="button" class="key" data-key="7" data-kind="num">7</button>
+              <button type="button" class="key" data-key="8" data-kind="num">8</button>
+              <button type="button" class="key" data-key="9" data-kind="num">9</button>
+              <button type="button" class="key" data-key="×" data-kind="op" aria-label="Multiply">×</button>
+              <button type="button" class="key" data-key="4" data-kind="num">4</button>
+              <button type="button" class="key" data-key="5" data-kind="num">5</button>
+              <button type="button" class="key" data-key="6" data-kind="num">6</button>
+              <button type="button" class="key" data-key="−" data-kind="op" aria-label="Minus">−</button>
+              <button type="button" class="key" data-key="1" data-kind="num">1</button>
+              <button type="button" class="key" data-key="2" data-kind="num">2</button>
+              <button type="button" class="key" data-key="3" data-kind="num">3</button>
+              <button type="button" class="key" data-key="+" data-kind="op" aria-label="Plus">+</button>
+              <button type="button" class="key col-span-2" data-key="0" data-kind="num">0</button>
+              <button type="button" class="key" data-key="." data-kind="num" aria-label="Point">.</button>
+              <button type="button" class="key" data-key="=" data-kind="eq" aria-label="Equals">=</button>
+            </div>
+          </section>
+
+          <aside class="grid gap-[18px]">
+            <h1 id="side-title" class="text-[40px] leading-[0.95] font-semibold tracking-[-0.03em] md:text-[52px]">Calculator, <span class="font-serif font-normal italic">replayed</span></h1>
+            <p id="side-text" class="text-[15px] leading-relaxed text-body">A 2022 side project, redrawn: keyboard first, honest errors, and a runner for the idle moments.</p>
+            <div id="coins" class="flex gap-2.5"></div>
+            <p id="stats" class="font-mono text-xs text-muted">0 of 4 badges · best run 0</p>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <p id="live" class="sr-only" aria-live="polite"></p>
+  </body>
 </html>
