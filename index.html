@@ -1,37 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Mycalculator</title>
-  <link rel="stylesheet" type="text/css" href="cssofsmallcalculator.css" />
-</head>
-<body>
-  <div align="center">
-    <h1>Calculator</h1>
-  <p id="p1">
-    <span id="expression"></span>
-    <span id="result"></span>
-  </p>
-<table>
-  <tr><td><input type="button" value="AC" id="Clear"></td>
-  <td><input type="button" value="DEL" id="delete" ></td><td><input type="button" value="x^2"></td><td><input type="button" value="/" class="operation" ></td></tr>
-  <tr>
-  <td><input type="button" class="number" value="7" ></td><td><input type="button" value="8" class="number" ></td><td><input type="button" value="9" class="number" ></td><td><input type="button" value="*" class="operation"></td></tr>
-  <tr>
-  <td><input type="button" value="4" class="number" ></td><td><input type="button" value="5" class="number" ></td><td><input type="button" class="number" value="6" ></td><td><input type="button" value="-" class="operation"></td></tr>
-<tr>
-  <td><input type="button" value="1" class="number" > </td>
-  <td><input type="button" value="2" class="number" ></td>
-  <td><input type="button" value="3" class="number" ></td>
-  <td><input type="button" value="+" class="operation" ></td>
-</tr>
-<tr>
-  <td colspan="2"><input type="button" value="0" class="number" style="width:105px"></td>
-  <td><input type="button" value="." id="ver" ></td>
-  <td><input type="button" value="=" id="equal"></td>
-  </tr>
-</table>
-</div>
-<script src="file.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculator, replayed · calc-project001</title>
+    <meta name="description" content="A small calculator that keeps score, with a one-button runner for the idle moments." />
+    <meta name="theme-color" content="#0b0c0d" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body class="min-h-dvh bg-ground font-display text-cream antialiased">
+    <div id="app"></div>
+  </body>
 </html>
