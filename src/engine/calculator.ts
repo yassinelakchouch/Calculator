@@ -5,7 +5,7 @@ export type Key = Digit | '.' | Op | 'x²' | '=' | 'AC' | '⌫';
 
 // After =, tokens is empty and result holds the answer; shown keeps the sum for the line above it.
 export type Calc = Readonly<{ tokens: readonly Token[]; result: string | null; shown: string; error: string | null }>;
-export type Stats = { operators: number; hard: boolean; value: number };
+type Stats = { operators: number; hard: boolean; value: number };
 export type Outcome = { state: Calc; event: 'typed' | 'ignored' | 'result' | 'error' | 'cleared'; stats?: Stats };
 
 export const EMPTY: Calc = { tokens: [], result: null, shown: '', error: null };

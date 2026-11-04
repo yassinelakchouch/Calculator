@@ -1,7 +1,7 @@
-export type ToneName = 'digit' | 'operator' | 'equals' | 'clear' | 'error' | 'nope' | 'jump' | 'hit' | 'badge';
+type ToneName = 'digit' | 'operator' | 'equals' | 'clear' | 'error' | 'nope' | 'jump' | 'hit' | 'badge';
 export const TONE_NAMES: readonly ToneName[] = ['digit', 'operator', 'equals', 'clear', 'error', 'nope', 'jump', 'hit', 'badge'];
 
-export type Note = { from: number; to?: number; at: number; length: number; gain: number; wave: OscillatorType };
+type Note = { from: number; to?: number; at: number; length: number; gain: number; wave: OscillatorType };
 
 // Digits walk a major pentatonic scale from C5, so typing a number sounds like a short tune, never a wrong note.
 const SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
