@@ -24,3 +24,425 @@
 
   --ease-settle: cubic-bezier(0.34, 1.45, 0.5, 1);
 }
+
+@layer components {
+  .card {
+    --key-h: 60px;
+    position: relative;
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    max-width: 420px;
+    padding: 18px;
+    border: 2px solid var(--color-ink);
+    border-radius: 22px;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- XP strip ---------- */
+  .xp-bar {
+    flex: 1;
+    min-width: 0;
+    height: 12px;
+    overflow: hidden;
+    border: 2px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-paper);
+  }
+
+  .xp-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--color-pink);
+    box-shadow: 2px 0 0 var(--color-ink);
+    transition: width 600ms var(--ease-settle);
+  }
+
+  .combo {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border: 2px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-pink);
+    font-weight: 500;
+    animation: drop 320ms var(--ease-settle);
+  }
+
+  /* ---------- display ---------- */
+  .display {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+    border: 2px solid var(--color-ink);
+    border-radius: 14px;
+    background: var(--color-ground);
+    color: var(--color-cream);
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .display:not([data-mode='calc']) {
+    cursor: pointer;
+  }
+
+  .layer {
+    position: absolute;
+    inset: 0;
+    transition:
+      opacity 300ms ease,
+      transform 300ms var(--ease-settle);
+  }
+
+  /* Board C-02 frame 08: leaving the game, the run sinks and fades while the sum rises back. */
+  .display[data-mode='calc'] .game {
+    opacity: 0;
+    transform: translateY(28px);
+    pointer-events: none;
+  }
+
+  .display:not([data-mode='calc']) .sum {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .expression {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    left: 16px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    text-align: right;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* Long sums keep their end in view; the ltr span inside keeps the reading order. */
+    direction: rtl;
+  }
+
+  .expression[data-done='true'] {
+    color: var(--color-muted);
+  }
+
+  .main {
+    position: absolute;
+    right: 16px;
+    bottom: 10px;
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    transform-origin: right bottom;
+  }
+
+  .main[data-size='m'] {
+    font-size: 36px;
+  }
+
+  .main[data-size='s'] {
+    font-size: 28px;
+  }
+
+  .display[data-error='true'] .main {
+    bottom: 40px;
+  }
+
+  .note {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-pink);
+  }
+
+  .error {
+    position: absolute;
+    right: 16px;
+    bottom: 14px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .back-note {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-pink);
+    opacity: 0;
+  }
+
+  .back-in {
+    animation: back-note 1400ms ease forwards;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .run-label,
+  .score,
+  .run-hint {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .run-label {
+    top: 12px;
+    left: 16px;
+    color: var(--color-pink);
+  }
+
+  .score {
+    top: 12px;
+    right: 16px;
+    font-size: 13px;
+  }
+
+  .run-hint {
+    right: 16px;
+    bottom: 8px;
+    color: var(--color-muted);
+  }
+
+  .game-text {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    left: 96px;
+    display: grid;
+    gap: 6px;
+  }
+
+  .game-text strong {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .game-text span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-body);
+  }
+
+  /* ---------- keys: lift on hover, sink on press, ring on focus ---------- */
+  .key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--key-h);
+    border: 2px solid var(--color-ink);
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    box-shadow: var(--shadow-key);
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      transform 160ms var(--ease-settle),
+      box-shadow 160ms var(--ease-settle),
+      background-color 160ms ease;
+  }
+
+  .key[data-kind='num'] {
+    background: var(--color-cream);
+  }
+
+  .key[data-kind='op'] {
+    background: var(--color-ink);
+    color: var(--color-cream);
+    font-size: 21px;
+  }
+
+  .key[data-kind='eq'] {
+    background: var(--color-accent);
+    font-size: 24px;
+  }
+
+  .key[data-kind='clear'] {
+    background: var(--color-paper);
+    font-size: 19px;
+  }
+
+  @media (hover: hover) {
+    .key:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-lift);
+    }
+
+    .key[data-kind='num']:hover {
+      background: #f5f2ec;
+    }
+
+    .key[data-kind='op']:hover {
+      background: #22262a;
+    }
+  }
+
+  .key:active,
+  .key[data-pressed] {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-ink);
+    transition-duration: 50ms;
+  }
+
+  .key:focus-visible,
+  .text-link:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .text-link {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .text-link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* ---------- tape ---------- */
+  .tape {
+    display: grid;
+    gap: 4px;
+    padding: 4px 2px 0;
+  }
+
+  .tape-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 0;
+    border-top: 1px solid rgb(11 12 13 / 0.15);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* ---------- badge toast ---------- */
+  .toast {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 8px;
+    border: 2px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-cream);
+    box-shadow: 4px 4px 0 var(--color-ink);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .toast-in {
+    animation: toast-in 420ms var(--ease-settle);
+  }
+
+  .toast-out {
+    animation: toast-out 250ms ease forwards;
+  }
+
+  /* ---------- feedback ---------- */
+  .pop {
+    animation: pop 360ms var(--ease-settle);
+  }
+
+  .rise {
+    animation: rise 420ms var(--ease-settle);
+  }
+
+  .nudge {
+    animation: nudge 200ms ease;
+  }
+
+  @media (max-width: 767px) {
+    .card {
+      --key-h: 64px;
+    }
+
+    .card[data-tape] {
+      --key-h: 52px;
+    }
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes nudge {
+  25% {
+    translate: -4px 0;
+  }
+  75% {
+    translate: 4px 0;
+  }
+}
+
+@keyframes back-note {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  15%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}

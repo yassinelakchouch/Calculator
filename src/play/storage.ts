@@ -1,7 +1,7 @@
 import { BADGES, START, type Badge, type Progress } from './rewards';
 
 type Store = Pick<Storage, 'getItem' | 'setItem'>;
-export type Saved = { progress: Progress; muted: boolean };
+type Saved = { progress: Progress; muted: boolean };
 
 const KEY = 'calc-project001';
 const fresh = (): Saved => ({ progress: START, muted: false });

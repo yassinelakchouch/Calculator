@@ -1,11 +1,11 @@
 // Board C-02: one button, Unit only jumps. Units are display pixels; y is the height above the ground.
 export const WORLD = { width: 360, unitX: 40, unitSize: 28, obstacleSize: 26, minGap: 210, maxStep: 0.05 } as const;
 
-export type Obstacle = { x: number; glyph: '+' | '−' | '×' | '÷' };
+type Obstacle = { x: number; glyph: '+' | '−' | '×' | '÷' };
 export type Run = { y: number; vy: number; obstacles: Obstacle[]; untilNext: number; score: number; over: boolean };
 
-const GRAVITY = 2600;
-const JUMP_SPEED = 760;
+const GRAVITY = 1856;
+const JUMP_SPEED = 464;
 const BASE_SPEED = 230;
 const GLYPHS: Obstacle['glyph'][] = ['+', '−', '×', '÷'];
 // The hit boxes are 5 px smaller than the drawings on each side: a graze is not a hit.
