@@ -5,6 +5,7 @@ import { jump, startRun, step, type Run } from './play/runner';
 import { createSound } from './play/sound';
 import { load, save } from './play/storage';
 import { createScene } from './ui/scene';
+import { createQueue } from './ui/queue';
 import { BADGE_TEXT, SIDE } from './ui/copy';
 import { coinSvg } from './ui/sprites';
 
@@ -60,8 +61,6 @@ export function start() {
   let idleTimer = 0;
   let comboTimer = 0;
   const tape: { line: string; xp: string }[] = [];
-  const badgeQueue: Badge[] = [];
-  let toastBusy = false;
 
   const persist = () => save({ progress, muted: sound.muted });
   const announce = (text: string) => (el.live.textContent = text);
@@ -128,13 +127,7 @@ export function start() {
   }
 
   // ---------- badges ----------
-  function showNextBadge() {
-    const badge = badgeQueue.shift();
-    if (!badge) {
-      toastBusy = false;
-      return;
-    }
-    toastBusy = true;
+  const toasts = createQueue<Badge>((badge, done) => {
     const { coin, name, why } = BADGE_TEXT[badge];
     el.toast.innerHTML = `${coinSvg(coin, 34, false)}<span class="grid gap-0.5"><strong class="text-[13px]">Badge · ${name}</strong><span class="font-mono text-xs text-quiet">${why}</span></span>`;
     el.toast.hidden = false;
@@ -146,14 +139,13 @@ export function start() {
       window.setTimeout(() => {
         el.toast.hidden = true;
         el.toast.classList.remove('toast-out');
-        showNextBadge();
+        done();
       }, 250);
     }, TOAST_MS);
-  }
+  });
 
   function earn(badges: Badge[]) {
-    badgeQueue.push(...badges);
-    if (!toastBusy) showNextBadge();
+    toasts.push(...badges);
   }
 
   // ---------- the calculator ----------
