@@ -2,7 +2,7 @@
 
 A small calculator that keeps score. Every result earns XP, results close together build a combo, and four badges wait to be found. Leave it alone for 15 seconds and the display turns into a one-button runner; press any calculator key and you are back in your sum, with that key applied.
 
-It started as a 2022 side project (kept as it was in [`legacy/`](legacy/)) and was redrawn in 2026: keyboard first, honest errors, no `eval()`.
+It started as a 2022 side project, still working as it was at [`/legacy/`](https://yassinelakchouch.github.io/Calculator/legacy/) (linked from the header as "First version"), and was redrawn in 2026: keyboard first, honest errors, no `eval()`.
 
 ## Try
 
@@ -43,5 +43,5 @@ src/play     rewards, saved progress, the runner model, sounds
 src/ui       sprites and the runner's scene
 src/app.ts   wires keys, display, rewards, runner and sound together
 e2e/         Playwright flows
-legacy/      the 2022 version
+public/legacy/  the 2022 version, served at /legacy/
 ```
