@@ -5,28 +5,14 @@ import { jump, startRun, step, type Run } from './play/runner';
 import { createSound } from './play/sound';
 import { load, save } from './play/storage';
 import { createScene } from './ui/scene';
+import { BADGE_TEXT, SIDE } from './ui/copy';
 import { coinSvg } from './ui/sprites';
 
-type Mode = 'calc' | 'attract' | 'play' | 'over';
+type Mode = keyof typeof SIDE;
 
 const IDLE_MS = 15_000;
 const COMBO_MS = 10_000;
 const TOAST_MS = 3_000;
-const BADGE_TEXT: Record<Badge, { coin: string; name: string; why: string }> = {
-  first: { coin: '1', name: 'First result', why: 'your first sum on this device' },
-  'clean-ten': { coin: '10', name: 'Clean ten', why: '10 results without an error' },
-  big: { coin: '1M', name: 'Big number', why: 'a result of a million or more' },
-  'runner-100': { coin: '100', name: 'Runner 100', why: '100 points in one run' },
-};
-const SIDE: Record<Mode, { title: string; text: string }> = {
-  calc: {
-    title: 'Calculator, <span class="font-serif font-normal italic">replayed</span>',
-    text: 'A 2022 side project, redrawn: keyboard first, honest errors, and a runner for the idle moments.',
-  },
-  attract: { title: 'Unit is <span class="font-serif font-normal italic">waiting</span>', text: 'Space, ↑ or a tap on the screen to run. Any key takes you back to the sum.' },
-  play: { title: 'Unit is <span class="font-serif font-normal italic">running</span>', text: 'Space, ↑ or a tap on the screen to jump. Any key takes you back to the sum.' },
-  over: { title: 'Unit <span class="font-serif font-normal italic">tripped</span>', text: 'Space, ↑ or a tap on the screen to run again. Any key takes you back to the sum.' },
-};
 
 const $ = <T extends Element = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const pad = (score: number) => String(Math.floor(score)).padStart(4, '0');
