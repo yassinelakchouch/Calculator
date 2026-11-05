@@ -25,6 +25,39 @@
   --ease-settle: cubic-bezier(0.34, 1.45, 0.5, 1);
 }
 
+/* Thin dark scrollbars instead of the browser's light default: the standard properties for Firefox and Chrome 121+,
+   the pseudo-elements for older WebKit. In the base layer, so a utility can still override them. */
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2d30 transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid var(--color-ground);
+    border-radius: 999px;
+    background: #2a2d30;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-quiet);
+  }
+}
+
+
 @layer components {
   .card {
     --key-h: 60px;
