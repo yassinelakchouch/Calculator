@@ -39,7 +39,8 @@
           <section id="card" class="card" aria-label="Calculator">
             <div id="toast" class="toast" role="status" hidden></div>
 
-            <div class="flex items-center gap-2.5 font-mono text-xs text-ink">
+            <div class="xp-row flex items-center gap-2.5 font-mono text-xs text-ink">
+              <div id="intro" class="intro" role="region" aria-label="How it works" hidden></div>
               <span id="level" class="flex-none font-medium">LVL 1</span>
               <span class="xp-bar" aria-hidden="true"><span id="xp-fill" class="xp-fill"></span></span>
               <span id="xp-text" class="flex-none">0/100 XP</span>
@@ -63,9 +64,10 @@
               </div>
             </div>
 
-            <div class="flex items-center justify-between font-mono text-xs">
-              <span class="text-quiet">calc-project001</span>
-              <span class="flex gap-4">
+            <div class="card-foot flex items-center justify-between gap-3 font-mono text-xs whitespace-nowrap">
+              <span class="hidden text-quiet min-[400px]:inline">calc-project001</span>
+              <span class="ml-auto flex gap-3 sm:gap-4">
+                <button id="how" type="button" class="text-link">How it works</button>
                 <button id="sound" type="button" class="text-link" aria-pressed="true">Sound on</button>
                 <button id="tape-toggle" type="button" class="text-link" aria-expanded="false" aria-controls="tape">Tape</button>
               </span>

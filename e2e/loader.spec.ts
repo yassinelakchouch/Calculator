@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { skipIntro } from './helpers';
 
 // Machines that ask for reduced motion (this one does) would skip the loader: these flows ask for motion.
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await skipIntro(page);
 });
 
 test('the first load drops the ten digits into a keypad before the page, then hands over to the calculator at 0 with nothing scored (board C-04)', async ({ page }) => {

@@ -595,3 +595,74 @@ body {
   visibility: visible;
 }
 
+
+/* The opening scenes (board C-05): the bar sits over the XP strip while they play, so the card never moves. */
+@layer components {
+  .xp-row {
+    position: relative;
+  }
+
+  .intro {
+    position: absolute;
+    inset: -4px 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-cream);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ink);
+  }
+
+  .intro[hidden] {
+    display: none;
+  }
+
+  .intro-label {
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .intro-steps {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    min-width: 40px;
+  }
+
+  .intro-steps i {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: rgb(11 12 13 / 0.18);
+  }
+
+  .intro-steps i.on {
+    background: var(--color-ink);
+  }
+
+  /* A 24 px line, a 44 px target. */
+  .intro .text-link {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .intro .text-link::after {
+    content: '';
+    position: absolute;
+    inset: -10px -8px;
+  }
+
+  .key[data-demo] {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* After the scenes, the way back is marked once. */
+  .text-link[data-ring] {
+    outline: 1.5px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 999px;
+  }
+}

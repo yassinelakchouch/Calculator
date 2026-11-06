@@ -15,3 +15,11 @@ export const SIDE: Record<'calc' | 'attract' | 'play' | 'over', { title: string;
   play: { title: 'Unit is <span class="font-serif font-normal italic">running</span>', text: 'Space, ↑ or a tap on the screen to jump. Any key takes you back to the sum.' },
   over: { title: 'Unit <span class="font-serif font-normal italic">tripped</span>', text: 'Space, ↑ or a tap on the screen to run again. Any key takes you back to the sum.' },
 };
+
+// The opening scenes (board C-05): what each one shows in the display, and what screen readers hear.
+export const INTRO: readonly { title?: string; line: string; said: string }[] = [
+  { line: 'click a key, or type it', said: 'Click the keys, or type on your keyboard.' },
+  { line: '+1 XP · firsts earn badges', said: 'Every sum earns XP, and firsts earn badges.' },
+  { title: 'Idle? Run for it.', line: 'leave it 15 s and Unit comes out', said: 'Leave it alone for 15 seconds and Unit comes out to run.' },
+  { title: 'Unit jumps', line: 'Space, ↑ or a tap · any other key is a sum again', said: 'Space, the up arrow or a tap makes Unit jump; any other key brings the sum back.' },
+];
