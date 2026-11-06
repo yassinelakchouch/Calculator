@@ -1,5 +1,6 @@
 export type Badge = 'first' | 'clean-ten' | 'big' | 'runner-100';
-export const BADGES: readonly Badge[] = ['first', 'clean-ten', 'big', 'runner-100'];
+// Shown in this order, so the coins rise 1 · 10 · 100 · 1M instead of jumping to 1M before 100.
+export const BADGES: readonly Badge[] = ['first', 'clean-ten', 'runner-100', 'big'];
 
 // clean counts results since the last error; combo and lastAt drive the ×2…×5 window.
 export type Progress = { xp: number; best: number; badges: Badge[]; clean: number; combo: number; lastAt: number | null };
