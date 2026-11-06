@@ -41,7 +41,7 @@ export function evaluate(tokens: readonly Token[]): number {
 
 // 12 significant digits hide float noise (0.1 + 0.2); e-notation past 15 digits or below 1e-9.
 // The display holds 16 characters: long decimals give up their last digits first, then switch to e-notation.
-export const MAX_SHOWN = 16;
+const MAX_SHOWN = 16;
 const exponential = (value: number) => value.toExponential().replace('e+', 'e');
 
 export function format(value: number): string {
