@@ -84,7 +84,7 @@ export function start() {
     el.expression.replaceChildren(Object.assign(document.createElement('span'), { dir: 'ltr', textContent: shown.expression }));
     el.expression.dataset.done = String(calc.result !== null);
     el.main.textContent = shown.main;
-    el.main.dataset.size = shown.main.length > 13 ? 's' : shown.main.length > 9 ? 'm' : 'l';
+    el.main.dataset.size = shown.main.length > 15 ? 'xs' : shown.main.length > 13 ? 's' : shown.main.length > 9 ? 'm' : 'l';
     el.error.hidden = !shown.error;
     el.error.innerHTML = shown.error ? `<span class="text-accent">! </span>${shown.error}` : '';
     el.display.dataset.error = String(Boolean(shown.error));

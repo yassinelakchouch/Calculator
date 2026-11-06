@@ -40,9 +40,18 @@ export function evaluate(tokens: readonly Token[]): number {
 }
 
 // 12 significant digits hide float noise (0.1 + 0.2); e-notation past 15 digits or below 1e-9.
+// The display holds 16 characters: long decimals give up their last digits first, then switch to e-notation.
+export const MAX_SHOWN = 16;
+const exponential = (value: number) => value.toExponential().replace('e+', 'e');
+
 export function format(value: number): string {
   const rounded = Number(value.toPrecision(12));
   if (rounded === 0) return '0';
   const size = Math.abs(rounded);
-  return size >= 1e15 || size < 1e-9 ? rounded.toExponential().replace('e+', 'e') : String(rounded);
+  if (size >= 1e15 || size < 1e-9) return exponential(Number(rounded.toPrecision(8)));
+  for (let digits = 12; digits >= 6; digits--) {
+    const text = String(Number(rounded.toPrecision(digits)));
+    if (text.length <= MAX_SHOWN) return text;
+  }
+  return exponential(Number(rounded.toPrecision(8)));
 }

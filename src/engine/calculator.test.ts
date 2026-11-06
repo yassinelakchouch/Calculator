@@ -110,4 +110,8 @@ describe('what a result is worth', () => {
 describe('what the display can hold', () => {
   test('a number left as 5. is finished as 5 once an operator follows', () => expect(run('5 . + 2').expression).toBe('5 + 2'));
   test('0. then × reads 0 ×, and the sum still works', () => expect(run('0 . × 3 =')).toMatchObject({ main: '0', expression: '0 × 3 =' }));
+  test('long decimals keep to 16 characters', () => {
+    for (const sum of ['1 ÷ 7 =', '− 2.09267042185 ÷ 1000000 =', '1 ÷ 3 − 1 =', '0.000001 ÷ 3 =']) expect(run(sum).main.length).toBeLessThanOrEqual(16);
+  });
+  test('the shortest exact answer is kept as it is', () => expect(run('1 ÷ 4 =').main).toBe('0.25'));
 });
