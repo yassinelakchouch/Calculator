@@ -21,16 +21,19 @@ export function formation(keypad: Box, screen: { width: number; height: number }
   return { scale, dx, dy };
 }
 
-export function runLoader(card: HTMLElement, keypad: HTMLElement) {
+export function runLoader(card: HTMLElement, keypad: HTMLElement, done: () => void = () => {}) {
   const loader = document.getElementById('loader');
-  if (!loader) return;
+  if (!loader) return done();
   const hidden = document.documentElement.classList.contains('loaded') || matchMedia('(prefers-reduced-motion: reduce)').matches;
   try {
     sessionStorage.setItem(SEEN, '1');
   } catch {
     // Storage blocked: it plays on every load, it is short.
   }
-  if (hidden) return loader.remove();
+  if (hidden) {
+    loader.remove();
+    return done();
+  }
 
   const ground = loader.querySelector<HTMLElement>('.loader-ground')!;
   const pad = loader.querySelector<HTMLElement>('.loader-pad')!;
@@ -60,6 +63,7 @@ export function runLoader(card: HTMLElement, keypad: HTMLElement) {
     window.removeEventListener('keydown', onKey, true);
     window.removeEventListener('pointerdown', onPointer, true);
     loader.remove();
+    done();
   };
   const swallow = (event: Event) => {
     event.preventDefault();
