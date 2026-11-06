@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { levelOf, onError, onResult, onRun, START, xpFor } from './rewards';
+import { BADGES, levelOf, onError, onResult, onRun, START, xpFor } from './rewards';
+import { BADGE_TEXT } from '../ui/copy';
 
 const sum = (operators = 1, hard = false, value = 56) => ({ operators, hard, value });
 
@@ -74,4 +75,8 @@ describe('badges, each earned once', () => {
     expect(long).toMatchObject({ earned: ['runner-100'], progress: { best: 130 } });
     expect(onRun(long.progress, 20).progress.best).toBe(130);
   });
+});
+
+test('the coins rise in value: 1 · 10 · 100 · 1M', () => {
+  expect(BADGES.map((badge) => BADGE_TEXT[badge].coin)).toEqual(['1', '10', '100', '1M']);
 });

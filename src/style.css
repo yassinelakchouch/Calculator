@@ -183,6 +183,11 @@
     font-size: 28px;
   }
 
+  /* A typed number can reach 18 characters (sign, 15 digits, the dot, a square): it still fits a 360 px phone. */
+  .main[data-size='xs'] {
+    font-size: 22px;
+  }
+
   .display[data-error='true'] .main {
     bottom: 40px;
   }

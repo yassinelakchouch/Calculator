@@ -49,6 +49,14 @@ describe('x²', () => {
   test('x² with nothing before it is ignored', () => expect(run('x²').event).toBe('ignored'));
   test('a digit right after x² is ignored', () => expect(run('3 x² 4').expression).toBe('3²'));
   test('it reads as a superscript', () => expect(run('3 x² + 1').expression).toBe('3² + 1'));
+  // The owner's report: x² pressed again kept stacking, 5²²²²²²² read as a power it never computed.
+  test('a second x² on the same number is ignored, so 5²² never appears', () => {
+    const outcome = run('5 x² x² x²');
+    expect(outcome.event).toBe('ignored');
+    expect(outcome.main).toBe('5²');
+  });
+  test('= then x² squares again', () => expect(run('5 x² = x² =').main).toBe('625'));
+  test('x² after a closed bracket of work still squares only the last number', () => expect(run('2 + 3 x² x² =').main).toBe('11'));
 });
 
 describe('results', () => {
@@ -86,7 +94,7 @@ describe('errors keep your number', () => {
   test('⌫ after the error removes the 0', () => expect(run('8 ÷ 0 = ⌫')).toMatchObject({ expression: '8 ÷', error: null }));
   test('a digit after the error replaces the 0', () => expect(run('8 ÷ 0 = 4 =').main).toBe('2'));
   test('a result too big to show says so', () => {
-    const outcome = run('999999999999999 x² x² x² x² x² =');
+    const outcome = run('999999999999999 x² = x² = x² = x² = x² =');
     expect(outcome.event).toBe('error');
     expect(outcome.error).toBe('Too big to show. Your sum is kept.');
   });
@@ -97,4 +105,13 @@ describe('what a result is worth', () => {
   test('two operators', () => expect(run('1 + 2 + 3 =').stats).toEqual({ operators: 2, hard: false, value: 6 }));
   test('÷ is hard', () => expect(run('8 ÷ 2 =').stats).toMatchObject({ hard: true }));
   test('x² is hard', () => expect(run('3 x² =').stats).toMatchObject({ hard: true, value: 9 }));
+});
+
+describe('what the display can hold', () => {
+  test('a number left as 5. is finished as 5 once an operator follows', () => expect(run('5 . + 2').expression).toBe('5 + 2'));
+  test('0. then × reads 0 ×, and the sum still works', () => expect(run('0 . × 3 =')).toMatchObject({ main: '0', expression: '0 × 3 =' }));
+  test('long decimals keep to 16 characters', () => {
+    for (const sum of ['1 ÷ 7 =', '− 2.09267042185 ÷ 1000000 =', '1 ÷ 3 − 1 =', '0.000001 ÷ 3 =']) expect(run(sum).main.length).toBeLessThanOrEqual(16);
+  });
+  test('the shortest exact answer is kept as it is', () => expect(run('1 ÷ 4 =').main).toBe('0.25'));
 });

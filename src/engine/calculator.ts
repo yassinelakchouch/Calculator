@@ -23,6 +23,11 @@ const isDigit = (key: Key): key is Digit => /^\d$/.test(key);
 const isOp = (key: Key): key is Op => key === '+' || key === '−' || key === '×' || key === '÷';
 
 const typed = (tokens: readonly Token[]): Outcome => ({ state: { ...EMPTY, tokens }, event: 'typed' });
+// A number left as "0." or "5." is finished as 0 or 5 once something follows it, so the sum never reads "0. ×".
+const settled = (tokens: readonly Token[]): readonly Token[] => {
+  const last = tokens.at(-1);
+  return last?.kind === 'num' && last.text.endsWith('.') ? [...tokens.slice(0, -1), num(last.text.slice(0, -1))] : tokens;
+};
 const ignored = (state: Calc): Outcome => ({ state, event: 'ignored' });
 
 export function press(state: Calc, key: Key): Outcome {
@@ -73,19 +78,20 @@ function edit(state: Calc, key: Key): Outcome {
       if (last.op === '×' || last.op === '÷') return typed([...tokens, num('-')]);
       return last.op === '−' ? ignored(state) : typed([...head, op('−')]);
     }
-    return typed([...tokens, op('−')]);
+    return typed([...settled(tokens), op('−')]);
   }
 
   if (isOp(key)) {
     if (!last) return ignored(state);
     if (pendingMinus) return typed(head.length === 0 ? [] : [...head.slice(0, -1), op(key)]);
     if (last.kind === 'op') return last.op === key ? ignored(state) : typed([...head, op(key)]);
-    return typed([...tokens, op(key)]);
+    return typed([...settled(tokens), op(key)]);
   }
 
+  // One square per number: a second would read as a higher power (5²² looks like 5 to the 22nd). = then x² squares again.
   if (key === 'x²') {
-    if (!last || last.kind === 'op' || pendingMinus) return ignored(state);
-    return typed([...tokens, { kind: 'sq' }]);
+    if (!last || last.kind === 'op' || last.kind === 'sq' || pendingMinus) return ignored(state);
+    return typed([...settled(tokens), { kind: 'sq' }]);
   }
 
   if (key === '⌫') {
@@ -98,7 +104,7 @@ function edit(state: Calc, key: Key): Outcome {
 }
 
 function equals(state: Calc): Outcome {
-  const tokens = state.tokens;
+  const tokens = settled(state.tokens);
   const last = tokens.at(-1);
   const operators = tokens.filter((token) => token.kind === 'op').length;
   const squared = tokens.some((token) => token.kind === 'sq');
