@@ -479,3 +479,9 @@
     transform: translate(-50%, -8px);
   }
 }
+
+/* Pairs with the inline rule in index.html: the page shows once this stylesheet applies (#12). */
+body {
+  visibility: visible;
+}
+
