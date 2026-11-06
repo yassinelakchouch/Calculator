@@ -106,3 +106,8 @@ describe('what a result is worth', () => {
   test('÷ is hard', () => expect(run('8 ÷ 2 =').stats).toMatchObject({ hard: true }));
   test('x² is hard', () => expect(run('3 x² =').stats).toMatchObject({ hard: true, value: 9 }));
 });
+
+describe('what the display can hold', () => {
+  test('a number left as 5. is finished as 5 once an operator follows', () => expect(run('5 . + 2').expression).toBe('5 + 2'));
+  test('0. then × reads 0 ×, and the sum still works', () => expect(run('0 . × 3 =')).toMatchObject({ main: '0', expression: '0 × 3 =' }));
+});
