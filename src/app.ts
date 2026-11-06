@@ -2,12 +2,13 @@ import { EMPTY, press, view, type Calc, type Key, type Outcome } from './engine/
 import { keyFromKeyboard } from './engine/keyboard';
 import { runLoader } from './ui/loader';
 import { BADGES, levelOf, onError, onResult, onRun, type Badge, type Progress } from './play/rewards';
-import { jump, startRun, step, type Run } from './play/runner';
+import { jump, startRun, step, WORLD, type Run } from './play/runner';
 import { createSound } from './play/sound';
-import { load, save } from './play/storage';
+import { introSeen, load, markIntroSeen, save } from './play/storage';
+import { createIntro, introBar } from './ui/intro';
 import { createScene } from './ui/scene';
 import { createQueue } from './ui/queue';
-import { BADGE_TEXT, SIDE } from './ui/copy';
+import { BADGE_TEXT, INTRO, SIDE } from './ui/copy';
 import { coinSvg } from './ui/sprites';
 
 type Mode = keyof typeof SIDE;
@@ -15,6 +16,10 @@ type Mode = keyof typeof SIDE;
 const IDLE_MS = 15_000;
 const COMBO_MS = 10_000;
 const TOAST_MS = 3_000;
+// Board C-05: each opening scene holds this long (longer when nothing moves); Space right after the loader is ignored.
+const SCENE_MS = 2200;
+const SCENE_CALM_MS = 2600;
+const SCENE_QUIET_MS = 600;
 
 const $ = <T extends Element = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const pad = (score: number) => String(Math.floor(score)).padStart(4, '0');
@@ -47,6 +52,8 @@ export function start() {
     sideText: $('#side-text'),
     coins: $('#coins'),
     stats: $('#stats'),
+    intro: $('#intro'),
+    how: $<HTMLButtonElement>('#how'),
   };
   const scene = createScene($<SVGSVGElement>('#scene'));
   const saved = load();
@@ -160,6 +167,7 @@ export function start() {
   }
 
   function input(key: Key) {
+    if (intro.running) intro.stop('play');
     if (mode !== 'calc') backToSum();
     resetIdle();
     const outcome = press(calc, key);
@@ -265,6 +273,102 @@ export function start() {
     idleTimer = window.setTimeout(enterAttract, IDLE_MS);
   }
 
+  // ---------- the opening scenes (board C-05): the calculator shows itself, then hands over ----------
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let introAt = 0;
+  let demoFrame = 0;
+  let swallowSpaceUp = false;
+
+  const demoKey = (key: string | null) =>
+    el.keys.querySelectorAll<HTMLElement>('[data-key]').forEach((button) => button.toggleAttribute('data-demo', button.dataset.key === key));
+
+  // Scene 4: Unit runs and jumps on its own over a steady course; nothing is scored or saved.
+  function demoRun() {
+    const steady = () => 0.5;
+    let demo = startRun();
+    let last = 0;
+    const loop = (time: number) => {
+      demo = step(demo, last ? (time - last) / 1000 : 0, steady);
+      last = time;
+      if (demo.obstacles.some((o) => o.x > WORLD.unitX && o.x - WORLD.unitX < 70)) demo = jump(demo);
+      scene.draw(demo, time);
+      if (!demo.over) demoFrame = requestAnimationFrame(loop);
+    };
+    if (calm) {
+      scene.draw(step(jump(demo), 0.12, steady), 0);
+      return;
+    }
+    demoFrame = requestAnimationFrame(loop);
+  }
+
+  function showScene(index: number) {
+    const line = INTRO[index];
+    el.intro.innerHTML = introBar(index, INTRO.length);
+    cancelAnimationFrame(demoFrame);
+    if (index < 2) {
+      el.display.dataset.mode = 'calc';
+      el.expression.replaceChildren(Object.assign(document.createElement('span'), { dir: 'ltr', textContent: index === 0 ? '7 ×' : '7 × 8 =' }));
+      el.expression.dataset.done = String(index === 1);
+      el.main.textContent = index === 0 ? '8' : '56';
+      el.main.dataset.size = 'l';
+      el.error.hidden = true;
+      el.note.textContent = line.line;
+      demoKey(index === 0 ? '8' : '=');
+      if (index === 1 && !calm) replay(el.main, 'pop');
+    } else {
+      demoKey(null);
+      el.display.dataset.mode = index === 2 ? 'attract' : 'play';
+      el.runLabel.hidden = index !== 3;
+      el.score.hidden = index !== 3;
+      el.score.textContent = pad(0);
+      el.runHint.hidden = index !== 3;
+      el.runHint.textContent = 'Space · ↑ · tap';
+      el.gameText.innerHTML = `<strong>${line.title}</strong><span>${line.line}</span>`;
+      if (index === 2) scene.draw(null, 0, 'stand');
+      else demoRun();
+    }
+    announce(line.said);
+  }
+
+  // The scenes only borrowed the display: it goes back to the sum as it was.
+  function restoreDisplay() {
+    cancelAnimationFrame(demoFrame);
+    demoKey(null);
+    el.intro.hidden = true;
+    el.intro.innerHTML = '';
+    renderSum();
+    renderMode();
+  }
+
+  const intro = createIntro({
+    count: INTRO.length,
+    hold: calm ? SCENE_CALM_MS : SCENE_MS,
+    show: showScene,
+    end: (reason) => {
+      markIntroSeen();
+      restoreDisplay();
+      resetIdle();
+      if (reason === 'play') return;
+      // The way back is marked once, then left alone.
+      el.how.dataset.ring = '';
+      window.setTimeout(() => delete el.how.dataset.ring, 2400);
+    },
+  });
+
+  function playIntro() {
+    if (intro.running) return;
+    if (mode !== 'calc') backToSum();
+    window.clearTimeout(idleTimer);
+    el.intro.hidden = false;
+    introAt = performance.now();
+    intro.start();
+  }
+
+  el.intro.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('[data-skip]')) intro.stop('skip');
+  });
+  el.how.addEventListener('click', playIntro);
+
   // ---------- wiring ----------
   el.keys.addEventListener('mousedown', (event) => {
     // Keep focus where it was, so Enter on the keyboard still means = after a click.
@@ -284,6 +388,21 @@ export function start() {
 
   document.addEventListener('keydown', (event) => {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (intro.running) {
+      const move = { ' ': 'next', ArrowRight: 'next', ArrowLeft: 'back' }[event.key];
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        intro.stop('skip');
+        return;
+      }
+      if (move) {
+        event.preventDefault();
+        swallowSpaceUp = event.key === ' ';
+        // The Space that closed the loader must not also skip a scene.
+        if (performance.now() - introAt > SCENE_QUIET_MS) intro[move as 'next' | 'back']();
+        return;
+      }
+    }
     resetIdle();
     if (mode !== 'calc' && (event.key === ' ' || event.key === 'ArrowUp')) {
       event.preventDefault();
@@ -305,7 +424,10 @@ export function start() {
   });
   // A focused button would also click on Space's keyup; in the game Space only jumps.
   document.addEventListener('keyup', (event) => {
-    if (mode !== 'calc' && event.key === ' ') event.preventDefault();
+    if (event.key !== ' ') return;
+    // A Space the scenes used must not click a focused key on its way up.
+    if (mode !== 'calc' || swallowSpaceUp) event.preventDefault();
+    swallowSpaceUp = false;
   });
   document.addEventListener('pointerdown', resetIdle);
 
@@ -343,5 +465,7 @@ export function start() {
   renderTape();
   renderMode();
   resetIdle();
-  runLoader(el.card, el.keys);
+  runLoader(el.card, el.keys, () => {
+    if (!introSeen()) playIntro();
+  });
 }
