@@ -1,6 +1,6 @@
 // Board C-04, "the keypad wakes up": on the first load of a visit the digits 1 to 9, then 0, roll into the display while each one's key presses down
 // and stays down; at 1 s the keys release together and the display rests at 0, ready. Nothing is scored.
-export const OPENING_DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const;
+const OPENING_DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const;
 export const STEP_MS = 100;
 export const RELEASE_AT = 1000;
 export const OPENING_MS = 1200;
