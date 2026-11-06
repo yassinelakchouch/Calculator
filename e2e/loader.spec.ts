@@ -6,10 +6,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('the first load drops the ten digits into a keypad before the page, then hands over to the calculator at 0 with nothing scored (board C-04)', async ({ page }) => {
+  // The handover is started by a timer: a paused clock holds the loader on screen however slowly the page opens.
+  await page.clock.install({ time: new Date('2026-11-06T12:00:00') });
+  await page.clock.pauseAt(new Date('2026-11-06T12:00:01'));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loader')).toBeVisible();
   await expect(page.locator('#loader .loader-fall')).toHaveText(['7', '8', '9', '4', '5', '6', '1', '2', '3', '0']);
   const xpBefore = await page.locator('#xp-text').textContent();
+  await page.clock.runFor(1500);
   await expect(page.locator('#loader')).toHaveCount(0, { timeout: 4000 });
   await expect(page.locator('#main')).toBeVisible();
   await expect(page.locator('#main')).toHaveText('0');
@@ -17,6 +21,9 @@ test('the first load drops the ten digits into a keypad before the page, then ha
 });
 
 test('a key during the loader ends it and is not typed; a reload in the same visit has none', async ({ page }) => {
+  // The handover is started by a timer: a paused clock holds the loader on screen however slowly the page opens.
+  await page.clock.install({ time: new Date('2026-11-06T12:00:00') });
+  await page.clock.pauseAt(new Date('2026-11-06T12:00:01'));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loader')).toBeVisible();
   await page.keyboard.press('7');
@@ -29,7 +36,9 @@ test('a key during the loader ends it and is not typed; a reload in the same vis
 });
 
 test('a tap on the loader ends it and types nothing', async ({ page }) => {
-  // It lasts about 1.5 s: tap as soon as it shows, not after the page's full load.
+  // The handover is started by a timer: a paused clock holds the loader on screen however slowly the page opens.
+  await page.clock.install({ time: new Date('2026-11-06T12:00:00') });
+  await page.clock.pauseAt(new Date('2026-11-06T12:00:01'));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loader')).toBeVisible();
   const { width, height } = page.viewportSize()!;
