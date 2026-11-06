@@ -49,6 +49,14 @@ describe('x²', () => {
   test('x² with nothing before it is ignored', () => expect(run('x²').event).toBe('ignored'));
   test('a digit right after x² is ignored', () => expect(run('3 x² 4').expression).toBe('3²'));
   test('it reads as a superscript', () => expect(run('3 x² + 1').expression).toBe('3² + 1'));
+  // The owner's report: x² pressed again kept stacking, 5²²²²²²² read as a power it never computed.
+  test('a second x² on the same number is ignored, so 5²² never appears', () => {
+    const outcome = run('5 x² x² x²');
+    expect(outcome.event).toBe('ignored');
+    expect(outcome.main).toBe('5²');
+  });
+  test('= then x² squares again', () => expect(run('5 x² = x² =').main).toBe('625'));
+  test('x² after a closed bracket of work still squares only the last number', () => expect(run('2 + 3 x² x² =').main).toBe('11'));
 });
 
 describe('results', () => {
@@ -86,7 +94,7 @@ describe('errors keep your number', () => {
   test('⌫ after the error removes the 0', () => expect(run('8 ÷ 0 = ⌫')).toMatchObject({ expression: '8 ÷', error: null }));
   test('a digit after the error replaces the 0', () => expect(run('8 ÷ 0 = 4 =').main).toBe('2'));
   test('a result too big to show says so', () => {
-    const outcome = run('999999999999999 x² x² x² x² x² =');
+    const outcome = run('999999999999999 x² = x² = x² = x² = x² =');
     expect(outcome.event).toBe('error');
     expect(outcome.error).toBe('Too big to show. Your sum is kept.');
   });

@@ -83,8 +83,9 @@ function edit(state: Calc, key: Key): Outcome {
     return typed([...tokens, op(key)]);
   }
 
+  // One square per number: a second would read as a higher power (5²² looks like 5 to the 22nd). = then x² squares again.
   if (key === 'x²') {
-    if (!last || last.kind === 'op' || pendingMinus) return ignored(state);
+    if (!last || last.kind === 'op' || last.kind === 'sq' || pendingMinus) return ignored(state);
     return typed([...tokens, { kind: 'sq' }]);
   }
 
