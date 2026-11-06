@@ -1,6 +1,4 @@
-// Board C-04 (owner's pick), "digits fall into place": before the page, the ten digits tumble down one by one and land, in a large keypad
-// centred on the screen, where their keys are; then that keypad shrinks onto the real one as the keys grow in under the digits and the page appears.
-// Once per visit, any key or tap ends it, none with reduced motion.
+// Board C-04: the ten digits fall into a large keypad that shrinks onto the real one; once per visit, ended by any key or tap, none with reduced motion.
 export const ORDER = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0'] as const;
 const DROP_GAP = 80;
 const DROP_MS = 520;
