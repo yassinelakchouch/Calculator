@@ -5,10 +5,10 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
 });
 
-test('the first load rolls a digit to 0 before the page, then hands over to the calculator at 0 with nothing scored (board C-04)', async ({ page }) => {
+test('the first load drops the ten digits into a keypad before the page, then hands over to the calculator at 0 with nothing scored (board C-04)', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loader')).toBeVisible();
-  await expect(page.locator('#loader .loader-roll span')).toHaveText(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']);
+  await expect(page.locator('#loader .loader-fall')).toHaveText(['7', '8', '9', '4', '5', '6', '1', '2', '3', '0']);
   const xpBefore = await page.locator('#xp-text').textContent();
   await expect(page.locator('#loader')).toHaveCount(0, { timeout: 4000 });
   await expect(page.locator('#main')).toBeVisible();

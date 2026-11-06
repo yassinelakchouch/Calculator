@@ -343,5 +343,5 @@ export function start() {
   renderTape();
   renderMode();
   resetIdle();
-  runLoader(el.card, el.main);
+  runLoader(el.card, el.keys);
 }
