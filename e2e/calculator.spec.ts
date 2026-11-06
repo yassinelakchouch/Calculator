@@ -22,7 +22,9 @@ test('7 × 8 = shows 56 and earns the first XP', async ({ page }) => {
   await tap(page, '7', 'Multiply', '8', 'Equals');
   await expect(main(page)).toHaveText('56');
   await expect(page.locator('#expression')).toHaveText('7 × 8 =');
-  await expect(page.locator('#note')).toHaveText('+1 XP');
+  // The first result earns a badge too: one toast carries both (board C-06 C); the display keeps only the maths.
+  await expect(page.locator('#toast')).toContainText('+1 XP · Badge · First result');
+  await expect(page.locator('#note')).toHaveText('');
   await expect(page.locator('#xp-text')).toHaveText('1/100 XP');
 });
 
@@ -44,8 +46,19 @@ test('dividing by zero explains itself, and ⌫ takes the 0 back', async ({ page
 test('a second result within 10 s builds a combo', async ({ page }) => {
   await sum(page, '1+1');
   await sum(page, '+2');
-  await expect(page.locator('#note')).toHaveText('+2 XP · ×2 combo');
+  // The first result's badge toast is still up, so the second gain is written into it (board C-06 C): one toast, never lost.
+  await expect(page.locator('#toast')).toContainText('+2 XP · ×2 combo · Badge · First result');
+  await expect(page.locator('#note')).toHaveText('');
   await expect(page.locator('#combo')).toHaveText('×2 combo');
+});
+
+test('a result without a badge shows its gain above the card, then it leaves (board C-06 C)', async ({ page }) => {
+  await sum(page, '1+1');
+  await expect(page.locator('#toast')).toBeHidden({ timeout: 5000 });
+  await sum(page, '2+2');
+  await expect(page.locator('#gain')).toHaveText('+2 XP · ×2 combo');
+  await expect(page.locator('#note')).toHaveText('');
+  await expect(page.locator('#gain')).toBeHidden({ timeout: 4000 });
 });
 
 test('XP, badges and the sound setting survive a reload', async ({ page }) => {

@@ -16,6 +16,7 @@ type Mode = keyof typeof SIDE;
 const IDLE_MS = 15_000;
 const COMBO_MS = 10_000;
 const TOAST_MS = 3_000;
+const GAIN_MS = 1_800;
 // Board C-05: each opening scene holds this long (longer when nothing moves); Space right after the loader is ignored.
 const SCENE_MS = 2200;
 const SCENE_CALM_MS = 2600;
@@ -43,6 +44,7 @@ export function start() {
     tapeRows: $('#tape-rows'),
     keys: $('#keys'),
     toast: $('#toast'),
+    gain: $('#gain'),
     live: $('#live'),
     score: $('#score'),
     runLabel: $('#run-label'),
@@ -61,13 +63,13 @@ export function start() {
 
   let progress: Progress = saved.progress;
   let calc: Calc = EMPTY;
-  let note = '';
   let mode: Mode = 'calc';
   let run: Run | null = null;
   let frame = 0;
   let lastTime = 0;
   let idleTimer = 0;
   let comboTimer = 0;
+  let gainTimer = 0;
   const tape: { line: string; xp: string }[] = [];
 
   const persist = () => save({ progress, muted: sound.muted });
@@ -88,7 +90,7 @@ export function start() {
     el.error.hidden = !shown.error;
     el.error.innerHTML = shown.error ? `<span class="text-accent">! </span>${shown.error}` : '';
     el.display.dataset.error = String(Boolean(shown.error));
-    el.note.textContent = note;
+    el.note.textContent = '';
   }
 
   function renderProgress() {
@@ -135,9 +137,14 @@ export function start() {
   }
 
   // ---------- badges ----------
-  const toasts = createQueue<Badge>((badge, done) => {
+  // Board C-06, option C (owner's pick): the gain shows above the card, never in the display where it hit long results.
+  // A result that also earns a badge says both in one toast, so nothing queues behind it.
+  type Toast = { badge: Badge; gain?: string };
+  const toasts = createQueue<Toast>(({ badge, gain }, done) => {
     const { coin, name, why } = BADGE_TEXT[badge];
-    el.toast.innerHTML = `${coinSvg(coin, 34, false)}<span class="grid gap-0.5"><strong class="text-[13px]">Badge · ${name}</strong><span class="font-mono text-xs text-quiet">${why}</span></span>`;
+    window.clearTimeout(gainTimer);
+    el.gain.hidden = true;
+    el.toast.innerHTML = `${coinSvg(coin, 34, false)}<span class="grid gap-0.5"><strong class="text-[13px]"><span data-gain>${gain ? `${gain} · ` : ''}</span>Badge · ${name}</strong><span class="font-mono text-xs text-quiet">${why}</span></span>`;
     el.toast.hidden = false;
     replay(el.toast, 'toast-in');
     sound.play('badge');
@@ -152,8 +159,21 @@ export function start() {
     }, TOAST_MS);
   });
 
-  function earn(badges: Badge[]) {
-    toasts.push(...badges);
+  function earn(badges: Badge[], gain?: string) {
+    toasts.push(...badges.map((badge, i) => ({ badge, gain: i === 0 ? gain : undefined })));
+  }
+
+  // A plain gain: a short toast that the next result replaces at once; while a badge toast is up, the gain is written into it.
+  function showGain(text: string) {
+    window.clearTimeout(gainTimer);
+    if (!el.toast.hidden) {
+      el.toast.querySelector('[data-gain]')!.textContent = `${text} · `;
+      return;
+    }
+    el.gain.textContent = text;
+    el.gain.hidden = false;
+    replay(el.gain, 'toast-in');
+    gainTimer = window.setTimeout(() => (el.gain.hidden = true), GAIN_MS);
   }
 
   // ---------- the calculator ----------
@@ -172,20 +192,19 @@ export function start() {
     resetIdle();
     const outcome = press(calc, key);
     calc = outcome.state;
-    note = '';
     soundFor(key, outcome);
 
     if (outcome.event === 'result' && outcome.stats) {
       const reward = onResult(progress, outcome.stats, Date.now());
       progress = reward.progress;
-      note = `+${reward.gained} XP${reward.combo > 1 ? ` · ×${reward.combo} combo` : ''}`;
+      const gain = `+${reward.gained} XP${reward.combo > 1 ? ` · ×${reward.combo} combo` : ''}`;
       const shown = view(calc);
       tape.unshift({ line: `${shown.expression} ${shown.main}`, xp: `+${reward.gained} XP` });
       tape.splice(3);
       announce(`${shown.main}, plus ${reward.gained} XP`);
       replay(el.main, 'pop');
-      replay(el.note, 'rise');
-      earn(reward.earned);
+      if (reward.earned.length) earn(reward.earned, gain);
+      else showGain(gain);
       persist();
       window.clearTimeout(comboTimer);
       comboTimer = window.setTimeout(renderProgress, COMBO_MS + 50);
@@ -305,6 +324,9 @@ export function start() {
     const line = INTRO[index];
     el.intro.innerHTML = introBar(index, INTRO.length);
     cancelAnimationFrame(demoFrame);
+    // Scene 2 shows the gain where results show it: in the toast above the card.
+    el.gain.textContent = '+1 XP';
+    el.gain.hidden = index !== 1;
     if (index < 2) {
       el.display.dataset.mode = 'calc';
       el.expression.replaceChildren(Object.assign(document.createElement('span'), { dir: 'ltr', textContent: index === 0 ? '7 ×' : '7 × 8 =' }));
@@ -334,6 +356,7 @@ export function start() {
   function restoreDisplay() {
     cancelAnimationFrame(demoFrame);
     demoKey(null);
+    el.gain.hidden = true;
     el.intro.hidden = true;
     el.intro.innerHTML = '';
     renderSum();

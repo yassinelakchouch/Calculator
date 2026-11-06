@@ -395,6 +395,14 @@
     transform: translateX(-50%);
   }
 
+  /* The XP gain (board C-06 C): the badge toast's place and look, as one compact line. */
+  .gain {
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ink);
+  }
+
   .toast-in {
     animation: toast-in 420ms var(--ease-settle);
   }
