@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { START } from './rewards';
-import { load, save } from './storage';
+import { introSeen, load, markIntroSeen, save } from './storage';
 
 const memory = () => {
   const items = new Map<string, string>();
@@ -40,4 +40,14 @@ test('the combo clock is not saved: a new visit starts at ×1', () => {
   const storage = memory();
   save({ progress: { ...START, combo: 4, lastAt: 123, clean: 6 }, muted: false }, storage);
   expect(load(storage).progress).toMatchObject({ combo: 0, lastAt: null, clean: 6 });
+});
+
+test('the opening scenes are remembered once seen, and a blocked store never throws', () => {
+  const store = memory();
+  expect(introSeen(store)).toBe(false);
+  markIntroSeen(store);
+  expect(introSeen(store)).toBe(true);
+  const blocked = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
+  expect(introSeen(blocked)).toBe(false);
+  expect(() => markIntroSeen(blocked)).not.toThrow();
 });

@@ -28,6 +28,25 @@ export function load(store?: Store): Saved {
   }
 }
 
+// The opening scenes play once per device (board C-05); blocked storage means they play each visit, never an error.
+const INTRO_KEY = `${KEY}:intro`;
+
+export function introSeen(store?: Store): boolean {
+  try {
+    return (store ?? window.localStorage).getItem(INTRO_KEY) === 'seen';
+  } catch {
+    return false;
+  }
+}
+
+export function markIntroSeen(store?: Store) {
+  try {
+    (store ?? window.localStorage).setItem(INTRO_KEY, 'seen');
+  } catch {
+    // Not remembered: the scenes play again next visit.
+  }
+}
+
 export function save({ progress, muted }: Saved, store?: Store) {
   const { xp, best, clean, badges } = progress;
   try {
