@@ -1,9 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { returningVisit } from './helpers';
 
-// The loader (board C-04) plays once per visit; these flows start after it, as a returning visit does.
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => sessionStorage.setItem('calc-project001:opened', '1'));
-});
+test.beforeEach(({ page }) => returningVisit(page));
 
 const main = (page: Page) => page.locator('#main');
 const display = (page: Page) => page.locator('#display');
