@@ -15,9 +15,16 @@
       html { background: #0b0c0d; }
       body { visibility: hidden; }
     </style>
+    <script>
+      // Board C-04: the loader plays once per visit; a later load in the visit hides it before it paints.
+      try {
+        if (sessionStorage.getItem('calc-project001:opened') === '1') document.documentElement.classList.add('loaded');
+      } catch (e) {}
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </head>
   <body class="min-h-dvh bg-ground font-display text-cream antialiased">
+    <div id="loader" class="loader" aria-hidden="true"><span class="loader-ground"></span><span class="loader-digit"><span class="loader-roll"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>0</span></span></span></div>
     <div class="flex min-h-dvh flex-col">
       <header class="flex items-center justify-between px-4 py-4 font-mono text-xs md:px-10 md:py-6">
         <a href="https://lakchouchyassine.vercel.app" class="text-cream underline-offset-4 hover:underline">← Yassine Lakchouch</a>
