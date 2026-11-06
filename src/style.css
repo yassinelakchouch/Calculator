@@ -480,6 +480,17 @@
   }
 }
 
+/* Board C-04: the opening draws over the sum, which stays hidden and untouched until it ends. */
+@layer components {
+  .display[data-opening] .sum {
+    visibility: hidden;
+  }
+
+  .opening .main.roll {
+    animation: digit-roll 240ms var(--ease-settle);
+  }
+}
+
 /* #13: with reduced motion nothing travels or scales. Fades stay, slides become fades, the wrong-key shake becomes a blink; the runner, started on purpose, is unchanged. */
 @layer components {
   @media (prefers-reduced-motion: reduce) {
@@ -516,6 +527,13 @@
     .key {
       transition-property: background-color;
     }
+  }
+}
+
+@keyframes digit-roll {
+  from {
+    opacity: 0;
+    transform: translateY(45%);
   }
 }
 

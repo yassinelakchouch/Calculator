@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+// The opening (board C-04) plays once per visit; these flows start after it, as a returning visit does.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem('calc-project001:opened', '1'));
+});
+
 test('the page answers with its name', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/calc-project001/);

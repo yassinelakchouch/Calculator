@@ -1,5 +1,6 @@
 import { EMPTY, press, view, type Calc, type Key, type Outcome } from './engine/calculator';
 import { keyFromKeyboard } from './engine/keyboard';
+import { runOpening } from './ui/opening';
 import { BADGES, levelOf, onError, onResult, onRun, type Badge, type Progress } from './play/rewards';
 import { jump, startRun, step, type Run } from './play/runner';
 import { createSound } from './play/sound';
@@ -342,4 +343,5 @@ export function start() {
   renderTape();
   renderMode();
   resetIdle();
+  runOpening(el.display, el.keys);
 }
