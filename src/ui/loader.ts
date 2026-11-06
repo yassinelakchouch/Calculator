@@ -2,10 +2,10 @@
 // centred on the screen, where their keys are; then that keypad shrinks onto the real one as the keys grow in under the digits and the page appears.
 // Once per visit, any key or tap ends it, none with reduced motion.
 export const ORDER = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0'] as const;
-export const DROP_GAP = 80;
-export const DROP_MS = 520;
-export const GROW_MS = 420;
-export const SEEN = 'calc-project001:opened';
+const DROP_GAP = 80;
+const DROP_MS = 520;
+const GROW_MS = 420;
+const SEEN = 'calc-project001:opened';
 const SETTLE = 'cubic-bezier(0.34, 1.45, 0.5, 1)';
 
 export const dropStart = (i: number) => i * DROP_GAP;
