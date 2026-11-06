@@ -21,3 +21,19 @@ test('before any stylesheet arrives the first paint is the dark ground; once sty
   await page.reload();
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).visibility)).toBe('visible');
 });
+
+test('with reduced motion nothing travels or scales: the pop goes, slides fade, the shake blinks (#13)', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const names = await page.evaluate(() =>
+    ['pop', 'rise', 'toast-in', 'toast-out', 'back-in', 'nudge'].map((name) => {
+      const probe = document.body.appendChild(document.createElement('div'));
+      probe.className = name;
+      const animation = getComputedStyle(probe).animationName;
+      probe.remove();
+      return animation;
+    }),
+  );
+  expect(names).toEqual(['none', 'fade-in', 'fade-in', 'fade-out', 'back-note-calm', 'blink']);
+});
+

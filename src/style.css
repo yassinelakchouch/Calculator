@@ -480,6 +480,76 @@
   }
 }
 
+/* #13: with reduced motion nothing travels or scales. Fades stay, slides become fades, the wrong-key shake becomes a blink; the runner, started on purpose, is unchanged. */
+@layer components {
+  @media (prefers-reduced-motion: reduce) {
+    .pop {
+      animation: none;
+    }
+
+    .rise,
+    .combo,
+    .toast-in {
+      animation-name: fade-in;
+    }
+
+    .toast-out {
+      animation-name: fade-out;
+    }
+
+    .back-in {
+      animation-name: back-note-calm;
+    }
+
+    .nudge {
+      animation-name: blink;
+    }
+
+    .xp-fill {
+      transition: none;
+    }
+
+    .layer {
+      transition-property: opacity;
+    }
+
+    .key {
+      transition-property: background-color;
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes back-note-calm {
+  0% {
+    opacity: 0;
+  }
+  15%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.55;
+  }
+}
+
 /* Pairs with the inline rule in index.html: the page shows once this stylesheet applies (#12). */
 body {
   visibility: visible;
