@@ -1,15 +1,21 @@
 import { describe, expect, test } from 'vitest';
-import { GROW_MS, HOLD_MS, landing } from './loader';
+import { dropStart, formation, landedAt, ORDER } from './loader';
 
-describe('the loader, grows from its 0 (board C-04 v3)', () => {
-  test('lands the big 0 on the display 0: right and bottom edges meet, heights match', () => {
-    const from = { right: 820, bottom: 560, height: 220 };
-    const to = { right: 700, bottom: 300, height: 56 };
-    expect(landing(from, to)).toEqual({ dx: -120, dy: -260, scale: 56 / 220 });
+describe('the loader, digits fall into place (board C-04)', () => {
+  test('drops the digits in keypad order, 7 first and 0 last, 80 ms apart', () => {
+    expect(ORDER.join('')).toBe('7894561230');
+    expect([0, 1, 9].map(dropStart)).toEqual([0, 80, 720]);
   });
 
-  test('holds the 0, then grows the calculator in, inside half a second', () => {
-    expect(HOLD_MS).toBeGreaterThan(0);
-    expect(HOLD_MS + GROW_MS).toBeLessThanOrEqual(700);
+  test('every digit has landed within about 1.3 s', () => {
+    expect(landedAt()).toBeLessThanOrEqual(1300);
+  });
+
+  test('the large keypad is the real one scaled about its centre and centred on the screen', () => {
+    const keypad = { left: 500, top: 500, width: 300, height: 300 };
+    const { scale, dx, dy } = formation(keypad, { width: 1440, height: 900 });
+    expect(scale).toBeCloseTo(2.34, 2);
+    expect(dx + (keypad.left + keypad.width / 2) * scale).toBeCloseTo(720);
+    expect(dy + (keypad.top + keypad.height / 2) * scale).toBeCloseTo(450);
   });
 });
