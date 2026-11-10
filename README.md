@@ -26,7 +26,7 @@ Every case a visitor can try is listed, with its expected result, in [`docs/PLAN
 ## How it was built
 
 1. **Measured the 2021 version first.** It used `eval()` for every result, had 50 × 35 px keys, and scrolled sideways on a phone.
-2. **Designed it before coding it.** Study, storyboard and screens were drawn as design boards; the loader, the opening scenes and the gain toast each got a board of their own later.
+2. **Designed it before coding it.** The study, the storyboard and every screen were drawn first; the loader, the opening scenes and the gain toast were designed the same way later.
 3. **Rebuilt it in small pull requests**, engine first: the parser and its test cases, then rewards and the runner, then the page. 23 pull requests are merged; each merge to `main` redeploys the site.
 
 ## What I learned
